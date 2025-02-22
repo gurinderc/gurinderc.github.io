@@ -26,10 +26,15 @@
             height: 15px;
             background-color: #ebedf0;
             border-radius: 3px;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
+        .commit-day:hover {
+            transform: translateY(-5px) scale(1.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid #2c3e50;
+        }
         .commit-0 { background-color: #ebedf0; }
 
         .commit-1 { background-color: #9be9a8; }
@@ -96,9 +101,9 @@
                 <div id="commit-grid" class="commit-grid"></div>
                 <div id="calendar-legend" class="has-text-centered mb-4">
                     <span class="mr-3"><span class="commit-day commit-0"></span> No contributions</span>
-                    <span class="mr-3"><span class="commit-day commit-1"></span> 1-4 commits</span>
-                    <span class="mr-3"><span class="commit-day commit-2"></span> 5-9 commits</span>
-                    <span><span class="commit-day commit-3"></span> 10+ commits</span>
+                    <span class="mr-3"><span class="commit-day commit-1"></span> 1 commit</span>
+                    <span class="mr-3"><span class="commit-day commit-2"></span> 2 commits</span>
+                    <span><span class="commit-day commit-3"></span> 3+ commits</span>
                 </div>
             </div>
 
@@ -159,7 +164,7 @@
                 const dateStr = date.toISOString().split('T')[0];
                 const count = contributionMap[dateStr] || 0;
                 
-                dayEl.className = `commit-day commit-${Math.min(4, Math.floor(count / 2))}`;
+                dayEl.className = `commit-day commit-${Math.min(4, count >= 3 ? 4 : count)}`;
                 dayEl.title = `${date.toLocaleDateString(navigator.language, {
                     year: 'numeric',
                     month: 'numeric',
