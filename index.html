@@ -141,6 +141,7 @@
             animation: fadeInUp 1s ease forwards;
             animation-delay: 0.4s;
             letter-spacing: -0.02em;
+            white-space: nowrap;
         }
 
         .name-wrapper {
@@ -374,6 +375,10 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            h1 {
+                white-space: normal;
+            }
+
             .links {
                 gap: 2rem;
             }
