@@ -4,207 +4,517 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gurinder</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">    
-    <link rel="icon" type="image/jpg" href="favicon.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --text-primary: #f5f5f0;
+            --text-secondary: #a8a8a0;
+            --accent: #e8dcc4;
+            --accent-dim: #d4c4a8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f5f5f5;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: none;
+            scroll-behavior: smooth;
         }
 
-        .commit-grid {
-            display: grid;
-            grid-template-columns: repeat(53, 15px);
-            grid-template-rows: repeat(7, 15px);
-            grid-auto-flow: column;
-            gap: 3px;
-            margin: 2rem 0;
-            justify-content: center;
-        }
-        
-        .commit-day {
-            width: 15px;
-            height: 15px;
-            background-color: #ebedf0;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        /* Custom Cursor */
+        .cursor {
+            width: 24px;
+            height: 24px;
+            border: 1px solid var(--accent-dim);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease-out, opacity 0.3s ease;
+            mix-blend-mode: difference;
+            opacity: 0;
         }
 
-        .commit-day:hover {
-            transform: translateY(-5px) scale(1.2);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border: 2px solid #2c3e50;
-        }
-        .commit-0 { background-color: #ebedf0; }
-
-        .commit-1 { background-color: #9be9a8; }
-        
-        .commit-2 { background-color: #40c463; }
-        
-        .commit-3 { background-color: #30a14e; }
-        
-        .commit-4 { background-color: #216e39; }
-
-        .github-card {
-            transition: all 0.3s ease;
-            height: 100%;
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.25s ease-out, opacity 0.3s ease;
+            opacity: 0;
         }
 
-        .github-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        /* Grain Overlay */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        .box {
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .title.is-1 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-        }
-
-        #calendar-legend {
+        /* Container */
+        .container {
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 1rem;
+            padding: 2rem;
+            position: relative;
         }
 
-        #calendar-legend span {
+        /* Decorative Elements */
+        .deco-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+            opacity: 0;
+            animation: fadeInLine 2s ease forwards;
+        }
+
+        .deco-line-1 {
+            top: 20%;
+            left: 0;
+            right: 0;
+            animation-delay: 0.5s;
+        }
+
+        .deco-line-2 {
+            bottom: 20%;
+            left: 0;
+            right: 0;
+            animation-delay: 0.7s;
+        }
+
+        @keyframes fadeInLine {
+            to {
+                opacity: 0.3;
+            }
+        }
+
+        /* Main Content */
+        .content {
+            text-align: center;
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .greeting {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 0.2s;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4rem, 12vw, 9rem);
+            font-weight: 300;
+            line-height: 0.95;
+            margin-bottom: 1.5rem;
+            position: relative;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 0.4s;
+            letter-spacing: -0.02em;
+        }
+
+        .name-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .name-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            transform: scaleX(0);
+            animation: expandLine 1.2s ease forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes expandLine {
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .tagline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 0.6s;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Links */
+        .links {
+            margin-top: 4rem;
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        .link {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .link:hover {
+            color: var(--accent);
+        }
+
+        .link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Background Mesh */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(232, 220, 196, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(232, 220, 196, 0.1) 0%, transparent 50%);
+            animation: meshFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes meshFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(30px, -30px) scale(1.05);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.2em;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.2s;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 0.5;
+            }
+        }
+
+        /* About Section */
+        .about-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .about-content {
+            max-width: 700px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .about-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+        }
+
+        .about-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(1rem, 2vw, 1.125rem);
+            line-height: 1.8;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-links {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .about-link {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .button.is-primary {
-            background-color: #2ecc71;
-            transition: background-color 0.3s;
+        .about-link::before {
+            content: '→';
+            transition: transform 0.3s ease;
         }
 
-        .button.is-primary:hover {
-            background-color: #27ae60;
+        .about-link:hover::before {
+            transform: translateX(4px);
+        }
+
+        .about-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .about-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .links {
+                gap: 2rem;
+            }
+
+            .greeting {
+                font-size: 0.75rem;
+            }
+
+            .tagline {
+                margin-top: 2rem;
+            }
+
+            .links {
+                margin-top: 3rem;
+            }
+
+            .cursor,
+            .cursor-follower {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <section class="section">
-        <div class="container">
-            <div class="box has-text-centered">
-                <h1 class="title is-1">GitHub Activity</h1>
-                <h2 class="subtitle">Recent contributions and projects</h2>
-                <div id="commit-grid" class="commit-grid"></div>
-                <div id="calendar-legend" class="has-text-centered mb-4">
-                    <span class="mr-3"><span class="commit-day commit-0"></span> No contributions</span>
-                    <span class="mr-3"><span class="commit-day commit-1"></span> 1 commit</span>
-                    <span class="mr-3"><span class="commit-day commit-2"></span> 2 commits</span>
-                    <span><span class="commit-day commit-3"></span> 3+ commits</span>
-                </div>
-            </div>
+    <div class="grain"></div>
+    <div class="bg-mesh"></div>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <div class="deco-line deco-line-1"></div>
+    <div class="deco-line deco-line-2"></div>
 
-            <div id="repos" class="columns is-multiline"></div>
+    <div class="container">
+        <div class="content">
+            <div class="greeting">Welcome</div>
+            <h1>
+                <span class="name-wrapper">Gurinder Chhabra</span>
+            </h1>
+            <p class="tagline">
+                A space for ideas, creativity, and connection.
+            </p>
+            
+            <div class="links">
+                <a href="#about" class="link">About</a>
+                <a href="https://www.linkedin.com/in/gurinder/" target="_blank" rel="noopener noreferrer" class="link">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <h2 class="about-title">About</h2>
+            <p class="about-text">
+                A professional focused on building meaningful connections and delivering thoughtful work.
+            </p>
+            <p class="about-text">
+                Currently exploring opportunities at the intersection of technology, creativity, and impact.
+            </p>
+            <div class="about-links">
+                <a href="https://www.linkedin.com/in/gurinder/" target="_blank" rel="noopener noreferrer" class="about-link">
+                    LinkedIn Profile
+                </a>
+            </div>
         </div>
     </section>
 
+    <div class="footer">EST. 2026</div>
+
     <script>
-        const GITHUB_USERNAME = 'gurinderc';
-        const WEEKS_TO_SHOW = 53;
-        const DAYS_IN_WEEK = 7;
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
 
-        async function fetchGitHubData() {
-            try {
-                // Fetch contribution data
-                const contribRes = await fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`);
-                const contribData = await contribRes.json();
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let followerX = 0;
+        let followerY = 0;
 
-                // Fetch repository data
-                const repoRes = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated`);
-                const repoData = await repoRes.json();
-
-                renderCommitGrid(contribData.contributions);
-                renderRepositories(repoData);
-            } catch (error) {
-                console.error('Error fetching GitHub data:', error);
-            }
-        }
-
-        function renderCommitGrid(contributions) {
-            const grid = document.getElementById('commit-grid');
-            grid.innerHTML = '';
-
-            const today = new Date();
-            const oneYearAgo = new Date(today);
-            oneYearAgo.setDate(today.getDate() - (WEEKS_TO_SHOW * 7));
-            oneYearAgo.setDate(oneYearAgo.getDate() + 1); // Add one day to start date
-
-            // Create a map of contributions
-            const contributionMap = {};
-            contributions.forEach(day => {
-                contributionMap[day.date] = day.count;
-            });
-
-            // Fill grid by days
-            const currentDate = new Date(oneYearAgo);
-            const days = [];
-
-            // Generate all dates
-            while (currentDate <= today) {
-                days.push(new Date(currentDate));
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-
-            // Create grid cells
-            days.forEach(date => {
-                const dayEl = document.createElement('div');
-                const dateStr = date.toISOString().split('T')[0];
-                const count = contributionMap[dateStr] || 0;
-                
-                dayEl.className = `commit-day commit-${Math.min(4, count >= 3 ? 4 : count)}`;
-                dayEl.title = `${date.toLocaleDateString(navigator.language, {
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric'
-                })} - ${count} commit${count !== 1 ? 's' : ''}`;
-                
-                grid.appendChild(dayEl);
-            });
-        }
-
-        function renderRepositories(repos) {
-            const container = document.getElementById('repos');
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
             
-            repos.slice(0, 6).forEach(repo => {
-                const card = document.createElement('div');
-                card.className = 'column is-one-third';
-                card.innerHTML = `
-                    <div class="card github-card">
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-content">
-                                    <p class="title is-4">${repo.name}</p>
-                                    <p class="subtitle is-6">${repo.language || 'Various languages'}</p>
-                                </div>
-                            </div>
-                            <div class="content">
-                                ${repo.description || 'No description available'}
-                                <br>
-                                <a href="${repo.html_url}" target="_blank" class="button is-primary is-small mt-3">
-                                    View on GitHub
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            cursor.style.opacity = '1';
+            cursorFollower.style.opacity = '1';
+        });
+
+        function animateCursor() {
+            // Smooth cursor movement
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+
+            cursor.style.transform = `translate(${cursorX - 12}px, ${cursorY - 12}px)`;
+            cursorFollower.style.transform = `translate(${followerX - 4}px, ${followerY - 4}px)`;
+
+            requestAnimationFrame(animateCursor);
         }
 
-        fetchGitHubData();
+        animateCursor();
+
+        // Link hover effects for cursor
+        const links = document.querySelectorAll('.link');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                cursor.style.transform = `translate(${cursorX - 12}px, ${cursorY - 12}px) scale(1.5)`;
+            });
+            link.addEventListener('mouseleave', () => {
+                cursor.style.transform = `translate(${cursorX - 12}px, ${cursorY - 12}px) scale(1)`;
+            });
+        });
+
+        // Parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            
+            document.querySelector('.content').style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        // Intersection Observer for About section
+        const aboutContent = document.querySelector('.about-content');
+        const aboutObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        if (aboutContent) {
+            aboutObserver.observe(aboutContent);
+        }
     </script>
 </body>
 </html>
