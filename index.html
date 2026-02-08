@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gurinder</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a'/%3E%3Cpath d='M50 20 C35 20 25 30 25 45 C25 55 30 63 38 67 L38 55 L45 55 L45 75 C45 78 47 80 50 80 C65 80 75 70 75 55 C75 40 65 30 50 30 L50 37 C61 37 68 44 68 55 C68 66 61 73 50 73 L50 62 L31 62 C31 62 32 45 32 45 C32 34 39 27 50 27 C61 27 68 34 68 45 L75 45 C75 30 65 20 50 20 Z' fill='%23e8dcc4'/%3E%3C/svg%3E">
+    <title>Gurinder Chhabra</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Crect x='10' y='10' width='80' height='80' fill='none' stroke='%23ff2e63' stroke-width='4'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='48' font-weight='bold' fill='%23ff2e63' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0a;
-            --text-primary: #f5f5f0;
-            --text-secondary: #a8a8a0;
-            --accent: #e8dcc4;
-            --accent-dim: #d4c4a8;
+            --black: #000000;
+            --white: #ffffff;
+            --red: #ff2e63;
+            --yellow: #ffeb3b;
+            --cyan: #00ffff;
         }
 
         * {
@@ -24,380 +24,311 @@
         }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--black);
+            color: var(--white);
             overflow-x: hidden;
-            cursor: none;
-            scroll-behavior: smooth;
+            cursor: crosshair;
         }
 
-        /* Custom Cursor */
-        .cursor {
-            width: 24px;
-            height: 24px;
-            border: 1px solid var(--accent-dim);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.15s ease-out, opacity 0.3s ease;
-            mix-blend-mode: difference;
-            opacity: 0;
-        }
-
-        .cursor-follower {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.25s ease-out, opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        /* Grain Overlay */
-        .grain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            opacity: 0.03;
-            z-index: 1000;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* Container */
-        .container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            position: relative;
-        }
-
-        /* Decorative Elements */
-        .deco-line {
-            position: absolute;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
-            opacity: 0;
-            animation: fadeInLine 2s ease forwards;
-        }
-
-        .deco-line-1 {
-            top: 20%;
-            left: 0;
-            right: 0;
-            animation-delay: 0.5s;
-        }
-
-        .deco-line-2 {
-            bottom: 20%;
-            left: 0;
-            right: 0;
-            animation-delay: 0.7s;
-        }
-
-        @keyframes fadeInLine {
-            to {
-                opacity: 0.3;
-            }
-        }
-
-        /* Main Content */
-        .content {
-            text-align: center;
-            max-width: 900px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .greeting {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.875rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards;
-            animation-delay: 0.2s;
-        }
-
-        h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(4rem, 12vw, 9rem);
-            font-weight: 300;
-            line-height: 0.95;
-            margin-bottom: 1.5rem;
-            position: relative;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards;
-            animation-delay: 0.4s;
-            letter-spacing: -0.02em;
-            white-space: nowrap;
-        }
-
-        .name-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .name-wrapper::after {
+        /* Scanline effect */
+        body::before {
             content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            transform: scaleX(0);
-            animation: expandLine 1.2s ease forwards;
-            animation-delay: 1s;
-        }
-
-        @keyframes expandLine {
-            to {
-                transform: scaleX(1);
-            }
-        }
-
-        .tagline {
-            font-family: 'DM Sans', sans-serif;
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--text-secondary);
-            font-weight: 300;
-            margin-top: 3rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards;
-            animation-delay: 0.6s;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Links */
-        .links {
-            margin-top: 4rem;
-            display: flex;
-            gap: 3rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards;
-            animation-delay: 0.8s;
-        }
-
-        .link {
-            font-family: 'DM Sans', sans-serif;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            position: relative;
-            padding-bottom: 4px;
-            transition: color 0.3s ease;
-        }
-
-        .link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--accent);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
-        }
-
-        .link:hover {
-            color: var(--accent);
-        }
-
-        .link:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        /* Background Mesh */
-        .bg-mesh {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            opacity: 0.05;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(232, 220, 196, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(232, 220, 196, 0.1) 0%, transparent 50%);
-            animation: meshFloat 20s ease-in-out infinite;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.03) 2px,
+                rgba(255, 255, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
         }
 
-        @keyframes meshFloat {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-            }
-            50% {
-                transform: translate(30px, -30px) scale(1.05);
-            }
-        }
-
-        /* Footer */
-        .footer {
+        /* Grid background */
+        .grid {
             position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.2em;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
-            animation-delay: 1.2s;
-            z-index: 2;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 46, 99, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 46, 99, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 0.5;
-            }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
-        /* About Section */
-        .about-section {
+        /* Container */
+        .container {
+            position: relative;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4rem 2rem;
+            padding: 2rem;
+        }
+
+        /* Main content */
+        .content {
+            max-width: 800px;
+            width: 100%;
             position: relative;
         }
 
-        .about-content {
-            max-width: 700px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease, transform 1s ease;
+        /* Glitch header */
+        .header {
+            position: relative;
+            margin-bottom: 3rem;
         }
 
-        .about-content.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: var(--red);
+            text-shadow: 
+                3px 3px 0 var(--cyan),
+                -3px -3px 0 var(--yellow);
+            animation: glitchText 3s infinite;
+            letter-spacing: -0.05em;
         }
 
-        .about-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 300;
+        @keyframes glitchText {
+            0%, 90%, 100% {
+                text-shadow: 
+                    3px 3px 0 var(--cyan),
+                    -3px -3px 0 var(--yellow);
+            }
+            92% {
+                text-shadow: 
+                    -3px 3px 0 var(--cyan),
+                    3px -3px 0 var(--yellow);
+            }
+            94% {
+                text-shadow: 
+                    3px -3px 0 var(--cyan),
+                    -3px 3px 0 var(--yellow);
+            }
+        }
+
+        /* Status badge */
+        .status {
+            display: inline-block;
+            background: var(--red);
+            color: var(--black);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 2rem;
-            color: var(--accent);
-            letter-spacing: -0.02em;
+            border: 3px solid var(--white);
+            box-shadow: 5px 5px 0 var(--cyan);
+            animation: statusBlink 2s infinite;
         }
 
-        .about-text {
-            font-family: 'DM Sans', sans-serif;
-            font-size: clamp(1rem, 2vw, 1.125rem);
+        @keyframes statusBlink {
+            0%, 49%, 100% { opacity: 1; }
+            50%, 99% { opacity: 0.7; }
+        }
+
+        /* Terminal box */
+        .terminal {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid var(--white);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 8px 8px 0 var(--red);
+        }
+
+        .terminal::before {
+            content: '> gurinder.exe';
+            position: absolute;
+            top: -1.5rem;
+            left: 1rem;
+            background: var(--black);
+            padding: 0 0.5rem;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            border: 2px solid var(--white);
+        }
+
+        .terminal p {
             line-height: 1.8;
-            color: var(--text-secondary);
-            font-weight: 300;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
         }
 
-        .about-links {
-            margin-top: 3rem;
+        .terminal p:last-child {
+            margin-bottom: 0;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--cyan);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Links */
+        .links {
             display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .about-link {
-            font-family: 'DM Sans', sans-serif;
-            color: var(--accent);
+        .link-item {
+            display: block;
             text-decoration: none;
-            font-size: 0.9rem;
+            color: var(--white);
+            background: var(--black);
+            border: 3px solid var(--white);
+            padding: 1.25rem 1.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 0.05em;
             position: relative;
-            padding-bottom: 4px;
-            transition: color 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            overflow: hidden;
+            transition: all 0.2s ease;
         }
 
-        .about-link::before {
-            content: '→';
-            transition: transform 0.3s ease;
-        }
-
-        .about-link:hover::before {
-            transform: translateX(4px);
-        }
-
-        .about-link::after {
+        .link-item::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
+            top: 0;
+            left: -100%;
             width: 100%;
-            height: 1px;
-            background: var(--accent);
-            transform: scaleX(0);
-            transform-origin: right;
+            height: 100%;
+            background: var(--red);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .link-item:hover::before {
+            left: 0;
+        }
+
+        .link-item:hover {
+            color: var(--black);
+            border-color: var(--red);
+            transform: translate(-5px, -5px);
+            box-shadow: 5px 5px 0 var(--cyan);
+        }
+
+        .link-item:active {
+            transform: translate(-2px, -2px);
+            box-shadow: 2px 2px 0 var(--cyan);
+        }
+
+        .link-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .link-arrow {
+            font-size: 1.5rem;
             transition: transform 0.3s ease;
         }
 
-        .about-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
+        .link-item:hover .link-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Decorative elements */
+        .deco-box {
+            position: fixed;
+            border: 2px solid var(--red);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .deco-box-1 {
+            top: 10%;
+            left: 5%;
+            width: 100px;
+            height: 100px;
+            animation: float1 8s ease-in-out infinite;
+        }
+
+        .deco-box-2 {
+            bottom: 15%;
+            right: 8%;
+            width: 150px;
+            height: 80px;
+            animation: float2 10s ease-in-out infinite;
+        }
+
+        .deco-box-3 {
+            top: 50%;
+            right: 15%;
+            width: 60px;
+            height: 120px;
+            animation: float1 7s ease-in-out infinite reverse;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, -20px) rotate(5deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-15px, 15px) rotate(-3deg); }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--white);
+            text-align: center;
+            font-size: 0.75rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                white-space: normal;
+            .name {
+                text-shadow: 
+                    2px 2px 0 var(--cyan),
+                    -2px -2px 0 var(--yellow);
             }
 
-            .links {
-                gap: 2rem;
+            .terminal {
+                padding: 1.5rem;
+                box-shadow: 4px 4px 0 var(--red);
             }
 
-            .greeting {
-                font-size: 0.75rem;
+            .link-item:hover {
+                transform: translate(-3px, -3px);
+                box-shadow: 3px 3px 0 var(--cyan);
             }
 
-            .tagline {
-                margin-top: 2rem;
-            }
-
-            .links {
-                margin-top: 3rem;
-            }
-
-            .cursor,
-            .cursor-follower {
+            .deco-box {
                 display: none;
             }
 
@@ -408,119 +339,90 @@
     </style>
 </head>
 <body>
-    <div class="grain"></div>
-    <div class="bg-mesh"></div>
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
-    
-    <div class="deco-line deco-line-1"></div>
-    <div class="deco-line deco-line-2"></div>
+    <div class="grid"></div>
+
+    <div class="deco-box deco-box-1"></div>
+    <div class="deco-box deco-box-2"></div>
+    <div class="deco-box deco-box-3"></div>
 
     <div class="container">
         <div class="content">
-            <div class="greeting">Welcome</div>
-            <h1>
-                <span class="name-wrapper">Gurinder Chhabra</span>
-            </h1>
-            <p class="tagline">
-                A space for ideas, creativity, and connection.
-            </p>
-            
+            <div class="header">
+                <div class="status">● AVAILABLE</div>
+                <h1 class="name">GURINDER<br>CHHABRA</h1>
+            </div>
+
+            <div class="terminal">
+                <p>> professional // builder // problem solver</p>
+                <p>> focus: technology, strategy & execution</p>
+                <p>> status: open to meaningful opportunities<span class="cursor-blink"></span></p>
+            </div>
+
             <div class="links">
-                <a href="#about" class="link">About</a>
-                <a href="https://www.linkedin.com/in/gurinder/" target="_blank" rel="noopener noreferrer" class="link">LinkedIn</a>
+                <a href="https://www.linkedin.com/in/gurinder/" target="_blank" rel="noopener noreferrer" class="link-item">
+                    <span class="link-label">
+                        <span>LINKEDIN</span>
+                        <span class="link-arrow">→</span>
+                    </span>
+                </a>
+            </div>
+
+            <div class="footer">
+                EST. 2026 // BUILT WITH INTENTION
             </div>
         </div>
     </div>
 
-    <section id="about" class="about-section">
-        <div class="about-content">
-            <h2 class="about-title">About</h2>
-            <p class="about-text">
-                A professional focused on building meaningful connections and delivering thoughtful work.
-            </p>
-            <p class="about-text">
-                Currently exploring opportunities at the intersection of technology, creativity, and impact.
-            </p>
-            <div class="about-links">
-                <a href="https://www.linkedin.com/in/gurinder/" target="_blank" rel="noopener noreferrer" class="about-link">
-                    LinkedIn Profile
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <div class="footer">EST. 2026</div>
-
     <script>
-        // Custom Cursor
-        const cursor = document.querySelector('.cursor');
-        const cursorFollower = document.querySelector('.cursor-follower');
+        // Glitch effect on hover
+        const name = document.querySelector('.name');
+        let glitchInterval;
 
-        let mouseX = 0;
-        let mouseY = 0;
-        let cursorX = 0;
-        let cursorY = 0;
-        let followerX = 0;
-        let followerY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            
-            cursor.style.opacity = '1';
-            cursorFollower.style.opacity = '1';
-        });
-
-        function animateCursor() {
-            // Smooth cursor movement
-            cursorX += (mouseX - cursorX) * 0.2;
-            cursorY += (mouseY - cursorY) * 0.2;
-            followerX += (mouseX - followerX) * 0.1;
-            followerY += (mouseY - followerY) * 0.1;
-
-            cursor.style.transform = `translate(${cursorX - 12}px, ${cursorY - 12}px)`;
-            cursorFollower.style.transform = `translate(${followerX - 4}px, ${followerY - 4}px)`;
-
-            requestAnimationFrame(animateCursor);
-        }
-
-        animateCursor();
-
-        // Link hover effects for cursor
-        const links = document.querySelectorAll('.link');
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.style.transform = `translate(${cursorX - 12}px, ${cursorY - 12}px) scale(1.5)`;
-            });
-            link.addEventListener('mouseleave', () => {
-                cursor.style.transform = `translate(${cursorX - 12}px, ${cursorY - 12}px) scale(1)`;
-            });
-        });
-
-        // Parallax effect on mouse move
-        document.addEventListener('mousemove', (e) => {
-            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
-            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
-            
-            document.querySelector('.content').style.transform = `translate(${moveX}px, ${moveY}px)`;
-        });
-
-        // Intersection Observer for About section
-        const aboutContent = document.querySelector('.about-content');
-        const aboutObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        name.addEventListener('mouseenter', () => {
+            let count = 0;
+            glitchInterval = setInterval(() => {
+                name.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+                count++;
+                if (count > 10) {
+                    clearInterval(glitchInterval);
+                    name.style.transform = 'translate(0, 0)';
                 }
-            });
-        }, {
-            threshold: 0.2
+            }, 50);
         });
 
-        if (aboutContent) {
-            aboutObserver.observe(aboutContent);
-        }
+        // Random grid flicker
+        const grid = document.querySelector('.grid');
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                grid.style.opacity = Math.random() * 0.3 + 0.7;
+                setTimeout(() => {
+                    grid.style.opacity = 1;
+                }, 50);
+            }
+        }, 100);
+
+        // Cursor trail effect
+        const colors = ['#ff2e63', '#00ffff', '#ffeb3b'];
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                const trail = document.createElement('div');
+                trail.style.position = 'fixed';
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                trail.style.width = '3px';
+                trail.style.height = '3px';
+                trail.style.background = colors[Math.floor(Math.random() * colors.length)];
+                trail.style.pointerEvents = 'none';
+                trail.style.zIndex = '9998';
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.style.transition = 'opacity 0.5s';
+                    trail.style.opacity = '0';
+                    setTimeout(() => trail.remove(), 500);
+                }, 100);
+            }
+        });
     </script>
 </body>
 </html>
